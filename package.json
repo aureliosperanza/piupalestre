@@ -1,0 +1,9 @@
+{
+  "name": "piupalestre",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "install": "npm --prefix server install && npm --prefix client install",
+    "build": "npm --prefix client run build"
+  }
+}

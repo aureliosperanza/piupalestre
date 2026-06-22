@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xargs cat)",
+      "Bash(npm install *)",
+      "Bash(node -e \"console.log\\('multer', require\\('multer/package.json'\\).version\\)\")",
+      "Bash(node -e \"console.log\\('multer', require\\('c:/piupalestre/server/node_modules/multer/package.json'\\).version\\)\")",
+      "Bash(npx knex *)",
+      "Bash(node -e ' *)",
+      "Bash(PORT=3001 node src/index.js)",
+      "Bash(npm run *)",
+      "Bash(cd /c/piupalestre/client && grep -rn \"fetchClients\\(searchQuery, statusFilter, urlFilter\\)\" src/)",
+      "Read(//c/c/piupalestre/client/**)",
+      "Bash(node -e \"const d=require\\('./comuni.json'\\); console.log\\('entries:', d.length\\); console.log\\('keys:', Object.keys\\(d[0]\\)\\); console.log\\('sample Roma:', JSON.stringify\\(d.find\\(c=>/^roma$/i.test\\(c.nome||c.denominazione||''\\)\\)||d[0]\\)\\);\")",
+      "Bash(node --input-type=module -e ' *)",
+      "Read(//tmp/**)",
+      "Bash(netstat -ano)",
+      "Bash(taskkill //PID 2876 //F)",
+      "Bash(kill -9 2876)",
+      "Bash(pkill -f nodemon)"
+    ]
+  }
+}
