@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "postinstall": "npm --prefix client install",
-    "build": "npm --prefix client run build"
+    "postinstall": "cd client && npm install",
+    "build": "cd client && npm run build"
   },
   "dependencies": {
     "@simplewebauthn/server": "^13.3.1",
