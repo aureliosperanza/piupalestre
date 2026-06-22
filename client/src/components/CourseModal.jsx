@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Calendar, Clock, Award, Users } from 'lucide-react';
+import { X, Calendar, Clock, Award, Users, ChevronDown } from 'lucide-react';
 
 export const WEEKDAYS = ['Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato', 'Domenica'];
 
@@ -15,6 +15,7 @@ export default function CourseModal({ isOpen, onClose, onSubmit, course }) {
 
   const [formData, setFormData] = useState(initialState);
   const [error, setError] = useState('');
+  const [isSelectOpen, setIsSelectOpen] = useState(false);
 
   useEffect(() => {
     if (course) {
@@ -93,25 +94,47 @@ export default function CourseModal({ isOpen, onClose, onSubmit, course }) {
               <input type="text" name="instructor" value={formData.instructor} onChange={handleChange} placeholder="Es: Elena Valeri" className={inputClass} />
             </div>
 
-            <div>
+            <div className="relative">
               <label className={labelClass}><Calendar size={12} /> Giorno della Settimana</label>
-              <select name="weekday" value={formData.weekday} onChange={handleChange} className={`${inputClass} cursor-pointer`}>
-                {WEEKDAYS.map((d, i) => (
-                  <option key={i} value={i}>{d}</option>
-                ))}
-              </select>
+              <div 
+                onClick={() => setIsSelectOpen(!isSelectOpen)}
+                className={`${inputClass} flex items-center justify-between cursor-pointer`}
+              >
+                <span>{WEEKDAYS[formData.weekday]}</span>
+                <ChevronDown size={16} className={`text-slate-400 transition-transform ${isSelectOpen ? 'rotate-180' : ''}`} />
+              </div>
+              
+              {isSelectOpen && (
+                <>
+                  <div className="fixed inset-0 z-10" onClick={() => setIsSelectOpen(false)}></div>
+                  <div className="absolute left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-lg z-20 py-1 overflow-hidden animate-in fade-in slide-in-from-top-1">
+                    {WEEKDAYS.map((d, i) => (
+                      <div 
+                        key={i} 
+                        className={`px-4 py-2.5 text-sm cursor-pointer hover:bg-slate-50 transition-colors ${formData.weekday === i ? 'bg-gymPrimary/10 text-gymPrimary font-bold' : 'text-slate-700'}`}
+                        onClick={() => {
+                          setFormData(prev => ({ ...prev, weekday: i }));
+                          setIsSelectOpen(false);
+                        }}
+                      >
+                        {d}
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
               <div>
                 <label className={labelClass}><Clock size={12} /> Inizio</label>
-                <input type="time" name="time_start" value={formData.time_start} onChange={handleChange} className={inputClass} required />
+                <input type="time" name="time_start" value={formData.time_start} onChange={handleChange} className={`${inputClass} px-2 sm:px-4`} required />
               </div>
               <div>
                 <label className={labelClass}><Clock size={12} /> Fine</label>
-                <input type="time" name="time_end" value={formData.time_end} onChange={handleChange} className={inputClass} required />
+                <input type="time" name="time_end" value={formData.time_end} onChange={handleChange} className={`${inputClass} px-2 sm:px-4`} required />
               </div>
-              <div>
+              <div className="col-span-2 sm:col-span-1">
                 <label className={labelClass}><Users size={12} /> Posti</label>
                 <input type="number" min="1" name="max_participants" value={formData.max_participants} onChange={handleChange} className={inputClass} required />
               </div>
