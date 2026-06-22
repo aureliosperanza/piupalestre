@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useParams } from 'react-router-dom';
+import { Menu } from 'lucide-react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import './utils/api'; // Side-effect import patches window.fetch with auth tokens and 401 hooks
 import Sidebar from './components/Sidebar';
@@ -44,6 +45,7 @@ function GymRoute() {
   const { isAuthenticated, gym } = useAuth();
   const { gym_slug } = useParams();
   const [activePage, setActivePage] = useState('dashboard');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   if (!isAuthenticated) {
     return <Login />;
@@ -60,13 +62,38 @@ function GymRoute() {
   }
 
   return (
-    <div className="min-h-screen bg-gymBg text-slate-800 flex">
-      {/* Fixed Sidebar */}
-      <Sidebar activePage={activePage} setActivePage={setActivePage} />
+    <div className="min-h-screen bg-gymBg text-slate-800 flex flex-col md:flex-row relative">
+      
+      {/* Mobile TopBar */}
+      <div className="md:hidden bg-gymCard border-b border-slate-200 p-4 flex items-center justify-between sticky top-0 z-30">
+        <div className="flex items-center gap-2">
+          <div className="h-8 w-8 rounded-lg bg-gymPrimary/20 flex items-center justify-center text-gymPrimary font-bold text-xs">
+            {gym?.name?.substring(0, 2).toUpperCase() || 'PP'}
+          </div>
+          <span className="font-bold text-slate-800 truncate">{gym?.name}</span>
+        </div>
+        <button
+          onClick={() => setIsSidebarOpen(true)}
+          className="p-2 text-slate-500 hover:text-gymPrimary transition-colors"
+        >
+          <Menu className="h-6 w-6" />
+        </button>
+      </div>
+
+      {/* Sidebar with mobile support */}
+      <Sidebar 
+        activePage={activePage} 
+        setActivePage={(page) => {
+          setActivePage(page);
+          setIsSidebarOpen(false); // Close on mobile after selection
+        }} 
+        isOpen={isSidebarOpen}
+        setIsOpen={setIsSidebarOpen}
+      />
 
       {/* Main Panel */}
-      <main className="flex-1 min-h-screen pl-64">
-        <div className="max-w-7xl mx-auto px-8 py-8">
+      <main className="flex-1 min-h-screen w-full md:pl-64 flex flex-col">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-6 md:py-8">
           {activePage === 'dashboard' && <Dashboard setActivePage={setActivePage} />}
           {activePage === 'clienti' && <Clienti />}
           {activePage === 'listino' && <Listino />}
