@@ -11,14 +11,15 @@ exports.createLead = async (req, res) => {
       return res.status(400).json({ error: 'Tutti i campi sono obbligatori' });
     }
 
-    const [id] = await db('leads').insert({
+    const [result] = await db('leads').insert({
       name,
       gym_name,
       city,
       phone,
       email,
       status: 'new'
-    });
+    }).returning('id');
+    const id = result.id ? result.id : result;
 
     const newLead = await db('leads').where({ id }).first();
     res.status(201).json(newLead);
@@ -103,14 +104,15 @@ exports.createGym = async (req, res) => {
       return res.status(400).json({ error: 'Un nome palestra simile è già registrato, scegli un nome diverso' });
     }
 
-    const [id] = await db('gyms').insert({
+    const [result] = await db('gyms').insert({
       name,
       email,
       password_hash: passwordHash,
       status: 'active',
       is_admin: false,
       slug
-    });
+    }).returning('id');
+    const id = result.id ? result.id : result;
 
     const newGym = await db('gyms').where({ id }).first();
     delete newGym.password_hash;

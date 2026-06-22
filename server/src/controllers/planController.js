@@ -46,7 +46,8 @@ exports.createPlan = async (req, res) => {
     const { error, payload } = buildPlanPayload(req.body);
     if (error) return res.status(400).json({ error });
 
-    const [id] = await db('plans').insert({ ...payload, gym_id: req.gym });
+    const [result] = await db('plans').insert({ ...payload, gym_id: req.gym }).returning('id');
+    const id = result.id ? result.id : result;
     const plan = await db('plans').where({ id }).first();
     res.status(201).json(plan);
   } catch (error) {

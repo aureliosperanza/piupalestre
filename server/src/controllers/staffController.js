@@ -32,15 +32,17 @@ exports.createStaff = async (req, res) => {
 
     const passwordHash = bcrypt.hashSync(password, 10);
 
-    const [id] = await db('staff').insert({
-      gym_id: req.gym,
+    const [result] = await db('staff').insert({
       first_name,
       last_name,
       email,
+      phone,
+      role: role || 'trainer',
       password_hash: passwordHash,
-      role,
-      status: 'active'
-    });
+      status: 'active',
+      gym_id: req.gym
+    }).returning('id');
+    const id = result.id ? result.id : result;
 
     const newStaff = await db('staff').where({ id }).first();
     delete newStaff.password_hash;

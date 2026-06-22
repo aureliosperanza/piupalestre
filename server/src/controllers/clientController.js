@@ -173,7 +173,7 @@ exports.createClient = async (req, res) => {
       return res.status(400).json({ error: 'Questa email è già registrata in questa palestra' });
     }
 
-    const [id] = await db('clients').insert({
+    const [result] = await db('clients').insert({
       first_name,
       last_name,
       gender: gender || 'M',
@@ -185,7 +185,8 @@ exports.createClient = async (req, res) => {
       birth_date: birth_date || null,
       medical_certificate_expiry: medical_certificate_expiry || null,
       gym_id: req.gym
-    });
+    }).returning('id');
+    const id = result.id ? result.id : result;
 
     if (req.file) {
       const ext = req.file.originalname.split('.').pop();

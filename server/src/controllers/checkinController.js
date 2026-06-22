@@ -77,13 +77,14 @@ exports.createCheckin = async (req, res) => {
     }
 
     // Persist the check-in attempt to the history log
-    await db('checkins').insert({
+    const [result] = await db('checkins').insert({
       client_id,
       checkin_time: db.fn.now(),
       status,
       reason,
       gym_id: req.gym
-    });
+    }).returning('id');
+    const id = result.id ? result.id : result;
 
     res.status(201).json({
       status,

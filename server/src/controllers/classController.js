@@ -117,7 +117,8 @@ exports.createClass = async (req, res) => {
     const { error, payload } = buildClassPayload(req.body);
     if (error) return res.status(400).json({ error });
 
-    const [id] = await db('classes').insert({ ...payload, gym_id: req.gym });
+    const [result] = await db('classes').insert({ ...payload, gym_id: req.gym }).returning('id');
+    const id = result.id ? result.id : result;
     const created = await db('classes').where({ id }).first();
     res.status(201).json(created);
   } catch (error) {

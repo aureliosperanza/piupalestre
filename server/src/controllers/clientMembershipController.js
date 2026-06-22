@@ -50,7 +50,7 @@ exports.createMembership = async (req, res) => {
       .where({ client_id, status: 'active' })
       .update({ status: 'cancelled' });
 
-    const [id] = await db('client_memberships').insert({
+    const [result] = await db('client_memberships').insert({
       client_id,
       plan_id,
       start_date,
@@ -60,7 +60,9 @@ exports.createMembership = async (req, res) => {
       assigned_price: final_assigned_price,
       paid_amount: final_paid_amount,
       payment_status
-    });
+    }).returning('id');
+
+    const id = result.id ? result.id : result;
 
     const membership = await db('client_memberships')
       .join('plans', 'client_memberships.plan_id', 'plans.id')

@@ -29,13 +29,14 @@ exports.register = async (req, res) => {
       return res.status(400).json({ error: 'Un nome palestra simile è già registrato, scegli un nome diverso' });
     }
 
-    const [id] = await db('gyms').insert({
+    const [result] = await db('gyms').insert({
       name,
       email,
       password_hash: passwordHash,
       status: 'active',
       slug
-    });
+    }).returning('id');
+    const id = result.id ? result.id : result;
 
     const newGym = await db('gyms').where({ id }).first();
     delete newGym.password_hash; // Hide password hash

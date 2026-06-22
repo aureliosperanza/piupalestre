@@ -190,8 +190,8 @@ exports.register = async (req, res) => {
       await db('clients').where({ id: existing.id }).update({ ...data, updated_at: db.fn.now() });
       return res.json({ success: true, mode: 'updated', message: 'Iscrizione completata con successo!' });
     }
-
-    await db('clients').insert({ ...data, email, gym_id: r.gym.id });
+    const [result] = await db('clients').insert({ ...data, email, gym_id: r.gym.id }).returning('id');
+    const id = result.id ? result.id : result;
     res.status(201).json({ success: true, mode: 'created', message: 'Iscrizione completata con successo!' });
   } catch (error) {
     console.error('Public register error:', error);
