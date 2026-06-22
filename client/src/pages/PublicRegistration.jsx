@@ -323,8 +323,9 @@ export default function PublicRegistration() {
                 <div>
                   <label className={labelClass}>Sesso</label>
                   <select name="gender" value={form.gender} onChange={handleChange} className={`${inputClass} cursor-pointer`}>
-                    <option value="M">Maschio</option>
-                    <option value="F">Femmina</option>
+                    <option value="" disabled>Seleziona</option>
+                    <option value="M">M</option>
+                    <option value="F">F</option>
                   </select>
                 </div>
                 <div>

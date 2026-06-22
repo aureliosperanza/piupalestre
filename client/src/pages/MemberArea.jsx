@@ -900,8 +900,9 @@ export default function MemberArea() {
                             <div>
                               <label className={labelClass}>Sesso</label>
                               <select value={profileData.gender || 'M'} onChange={e => setProfileData({...profileData, gender: e.target.value})} className={inputClass}>
-                                <option value="M">Maschio</option>
-                                <option value="F">Femmina</option>
+                                <option value="" disabled>Seleziona</option>
+                                <option value="M">M</option>
+                                <option value="F">F</option>
                               </select>
                             </div>
                             <div>
