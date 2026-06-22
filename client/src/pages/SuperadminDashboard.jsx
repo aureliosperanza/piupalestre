@@ -21,7 +21,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 
 export default function SuperadminDashboard() {
-  const { logout } = useAuth();
+  const { logout, impersonate } = useAuth();
   const [activeTab, setActiveTab] = useState('panoramica');
   const [leads, setLeads] = useState([]);
   const [gyms, setGyms] = useState([]);
@@ -116,6 +116,23 @@ export default function SuperadminDashboard() {
 
       // Refresh list
       fetchData();
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  const handleImpersonate = async (gym) => {
+    if (!window.confirm(`Vuoi accedere come amministratore della palestra "${gym.name}"?`)) return;
+    try {
+      const res = await fetch(`/api/admin/impersonate/${gym.id}`, { method: 'POST' });
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.error || 'Impossibile impersonificare la palestra');
+      }
+      const data = await res.json();
+      impersonate(data.token, data.gym);
+      // Redirect to the gym's dashboard
+      window.location.href = `/${gym.slug}/admin`;
     } catch (err) {
       alert(err.message);
     }
@@ -527,6 +544,15 @@ export default function SuperadminDashboard() {
                     {/* Azioni */}
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-center gap-2">
+                        <button
+                          onClick={() => handleImpersonate(gym)}
+                          className="flex items-center gap-1 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-lg text-xs font-bold border border-indigo-200/50 transition-all cursor-pointer"
+                          title="Accedi come proprietario"
+                        >
+                          <UserCheck className="h-3.5 w-3.5" />
+                          Entra
+                        </button>
+                        
                         {gym.status === 'active' ? (
                           <button
                             onClick={() => handleToggleGymStatus(gym.id, gym.status)}

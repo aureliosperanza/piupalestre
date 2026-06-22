@@ -6,6 +6,7 @@ export function AuthProvider({ children }) {
   const [token, setToken] = useState(null);
   const [gym, setGym] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isImpersonating, setIsImpersonating] = useState(false);
 
   useEffect(() => {
     // Check localStorage for active session
@@ -22,6 +23,11 @@ export function AuthProvider({ children }) {
         localStorage.removeItem('gym_user');
       }
     }
+
+    if (localStorage.getItem('superadmin_token')) {
+      setIsImpersonating(true);
+    }
+
     setLoading(false);
   }, []);
 
@@ -35,18 +41,44 @@ export function AuthProvider({ children }) {
   const logout = () => {
     setToken(null);
     setGym(null);
+    setIsImpersonating(false);
     localStorage.removeItem('gym_token');
     localStorage.removeItem('gym_user');
+    localStorage.removeItem('superadmin_token');
+    localStorage.removeItem('superadmin_user');
     // Force reload window to clear states
     window.location.reload();
+  };
+
+  const impersonate = (newToken, gymData) => {
+    localStorage.setItem('superadmin_token', token);
+    localStorage.setItem('superadmin_user', JSON.stringify(gym));
+    setIsImpersonating(true);
+    login(newToken, gymData);
+  };
+
+  const stopImpersonating = () => {
+    const saToken = localStorage.getItem('superadmin_token');
+    const saUser = localStorage.getItem('superadmin_user');
+    
+    if (saToken && saUser) {
+      login(saToken, JSON.parse(saUser));
+      setIsImpersonating(false);
+      localStorage.removeItem('superadmin_token');
+      localStorage.removeItem('superadmin_user');
+      window.location.href = '/superadmin';
+    }
   };
 
   const value = {
     token,
     gym,
     isAuthenticated: !!token,
+    isImpersonating,
     login,
     logout,
+    impersonate,
+    stopImpersonating,
     loading
   };
 

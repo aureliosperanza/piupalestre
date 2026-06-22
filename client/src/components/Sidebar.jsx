@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import logo from '../assets/logo.png';
 
 export default function Sidebar({ activePage, setActivePage }) {
-  const { gym, logout } = useAuth();
+  const { gym, logout, isImpersonating, stopImpersonating } = useAuth();
   
   // Roles: 'owner', 'admin', 'reception', 'trainer'
   const userRole = gym?.role || 'owner';
@@ -87,6 +87,19 @@ export default function Sidebar({ activePage, setActivePage }) {
       <div className="p-6 border-b border-slate-100 flex items-center gap-3">
         <img src={logo} alt="PiùPalestre" className="h-9 w-auto" />
       </div>
+
+      {/* Impersonation exit banner */}
+      {isImpersonating && (
+        <div className="p-3 bg-rose-50 border-b border-rose-100">
+          <button
+            onClick={stopImpersonating}
+            className="w-full flex justify-center items-center gap-2 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-bold transition-colors cursor-pointer shadow-sm shadow-rose-200"
+          >
+            <LogOut className="h-4 w-4" />
+            Torna alla Console
+          </button>
+        </div>
+      )}
       
       {/* Navigation menu items */}
       <nav className="flex-1 p-4 overflow-y-auto space-y-6 mt-2">

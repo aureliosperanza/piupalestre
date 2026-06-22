@@ -48,6 +48,11 @@ function GymRoute() {
     return <Login />;
   }
 
+  // Superadmin guard: prevent superadmin from using the gym dashboard unless impersonating
+  if (gym?.is_admin && !useAuth().isImpersonating) {
+    return <Navigate to="/superadmin" replace />;
+  }
+
   // Tenant security guard: ensure logged-in gym matches the URL slug
   if (gym.slug !== gym_slug) {
     return <Navigate to={`/${gym.slug}/admin`} replace />;

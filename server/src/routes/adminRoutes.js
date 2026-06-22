@@ -12,5 +12,6 @@ router.put('/admin/leads/:id', authenticateGym, requireSuperadmin, adminControll
 router.get('/admin/gyms', authenticateGym, requireSuperadmin, adminController.getGyms);
 router.post('/admin/gyms', authenticateGym, requireSuperadmin, adminController.createGym);
 router.put('/admin/gyms/:id/status', authenticateGym, requireSuperadmin, adminController.updateGymStatus);
+router.post('/admin/impersonate/:id', authenticateGym, requireSuperadmin, adminController.impersonateGym);
 
 module.exports = router;

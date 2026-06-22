@@ -1,5 +1,6 @@
 const db = require('../config/db');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const slugify = (text) => text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
@@ -151,3 +152,51 @@ exports.updateGymStatus = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
+// POST /api/admin/impersonate/:id - Impersonate a specific gym
+exports.impersonateGym = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const gym = await db('gyms').where({ id }).first();
+    if (!gym) {
+      return res.status(404).json({ error: 'Palestra non trovata' });
+    }
+
+    if (gym.is_admin) {
+      return res.status(400).json({ error: 'Non puoi impersonificare un altro admin' });
+    }
+
+    const secret = process.env.JWT_SECRET || 'supersecretkey_piupalestre';
+    const token = jwt.sign(
+      {
+        gym_id: gym.id,
+        email: gym.email,
+        name: gym.name,
+        is_admin: false,
+        slug: gym.slug,
+        role: 'owner',
+        impersonated_by: req.gym // The superadmin's ID
+      },
+      secret,
+      { expiresIn: '12h' }
+    );
+
+    res.json({
+      token,
+      gym: {
+        id: gym.id,
+        name: gym.name,
+        email: gym.email,
+        is_admin: false,
+        slug: gym.slug,
+        role: 'owner',
+        impersonated_by: req.gym
+      }
+    });
+  } catch (error) {
+    console.error('Error impersonating gym:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
