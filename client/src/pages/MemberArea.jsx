@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Mail, ArrowRight, ArrowLeft, LogOut, User, CreditCard, CalendarDays, Phone, ShieldAlert, Clock, CheckCircle, LayoutDashboard, ClipboardList, Users, Plus, X, Award, Check, QrCode, Fingerprint, ChevronDown, ChevronUp, Settings } from 'lucide-react';
+import { Dumbbell, CreditCard, CalendarDays, KeyRound, Smartphone, LogOut, CheckCircle, Clock, AlertCircle, X, ChevronRight, Fingerprint, Lock, FileText, Upload, Mail, ArrowRight, ArrowLeft, User, Award, Check, QrCode, ChevronDown, ChevronUp, Settings, ShieldAlert, LayoutDashboard, ClipboardList, Users, Plus, Phone } from 'lucide-react';
+import PasswordInput from '../components/PasswordInput';
 import { QRCodeSVG } from 'qrcode.react';
 import { startRegistration, startAuthentication } from '@simplewebauthn/browser';
 import { formatDate } from '../utils/dateHelpers';
@@ -441,7 +442,7 @@ export default function MemberArea() {
                 
                 <div>
                   <label className={labelClass}>Password</label>
-                  <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" className={inputClass} required autoFocus />
+                  <PasswordInput value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" className={inputClass} required autoFocus />
                 </div>
                 
                 <button type="submit" disabled={loading} className="w-full flex items-center justify-center gap-2 px-5 py-3.5 bg-slate-800 hover:bg-slate-900 text-white rounded-xl font-bold text-sm transition-all disabled:opacity-50 cursor-pointer shadow-lg shadow-slate-900/20">
@@ -945,11 +946,11 @@ export default function MemberArea() {
                         <form onSubmit={handleUpdatePassword} className="space-y-4 max-w-sm mt-4">
                           <div>
                             <label className={labelClass}>Nuova Password</label>
-                            <input type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} className={inputClass} minLength={6} placeholder="Minimo 6 caratteri" required />
+                            <PasswordInput value={newPassword} onChange={e => setNewPassword(e.target.value)} className={inputClass} minLength={6} placeholder="Minimo 6 caratteri" required />
                           </div>
                           <div>
                             <label className={labelClass}>Conferma Password</label>
-                            <input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} className={inputClass} required />
+                            <PasswordInput value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} className={inputClass} required />
                           </div>
 
                           {passwordMsg && (

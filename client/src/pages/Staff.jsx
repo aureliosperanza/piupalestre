@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Users, Plus, Edit2, Trash2, Lock, Unlock, ShieldAlert, Key } from 'lucide-react';
+import PasswordInput from '../components/PasswordInput';
 import { useAuth } from '../context/AuthContext';
 
 export default function Staff() {
@@ -316,14 +317,23 @@ export default function Staff() {
 
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-slate-500 uppercase">Password</label>
-                <input
-                  type={modalMode === 'create' ? 'text' : 'password'}
-                  required={modalMode === 'create'}
-                  placeholder={modalMode === 'edit' ? 'Lascia vuoto per non cambiare' : 'Password provvisoria'}
-                  value={formData.password}
-                  onChange={e => setFormData(p => ({...p, password: e.target.value}))}
-                  className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm focus:border-gymPrimary focus:ring-1 focus:ring-gymPrimary outline-none transition-colors"
-                />
+                {modalMode === 'create' ? (
+                  <input
+                    type="text"
+                    required
+                    placeholder="Password provvisoria"
+                    value={formData.password}
+                    onChange={e => setFormData(p => ({...p, password: e.target.value}))}
+                    className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm focus:border-gymPrimary focus:ring-1 focus:ring-gymPrimary outline-none transition-colors"
+                  />
+                ) : (
+                  <PasswordInput
+                    placeholder="Lascia vuoto per non cambiare"
+                    value={formData.password}
+                    onChange={e => setFormData(p => ({...p, password: e.target.value}))}
+                    className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm focus:border-gymPrimary focus:ring-1 focus:ring-gymPrimary outline-none transition-colors"
+                  />
+                )}
               </div>
 
               <div className="space-y-1.5">

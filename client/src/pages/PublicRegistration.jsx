@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Mail, User, Phone, Calculator, ArrowRight, CheckCircle, Dumbbell, ArrowLeft, ShieldCheck } from 'lucide-react';
+import PasswordInput from '../components/PasswordInput';
 import { computeCodiceFiscale, normalize } from '../utils/codiceFiscale';
 import { formatDateForInput } from '../utils/dateHelpers';
 import logo from '../assets/logo.png';
@@ -367,7 +368,7 @@ export default function PublicRegistration() {
                 </div>
                 <div>
                   <label className={labelClass}>Scegli una Password *</label>
-                  <input type="password" name="password" value={form.password} onChange={handleChange} placeholder="••••••••" className={inputClass} required minLength={6} />
+                  <PasswordInput name="password" value={form.password} onChange={handleChange} placeholder="••••••••" className={inputClass} required minLength={6} />
                 </div>
               </div>
 

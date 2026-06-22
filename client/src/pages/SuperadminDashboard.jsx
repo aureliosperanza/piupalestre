@@ -18,6 +18,7 @@ import {
   FileText,
   LogOut 
 } from 'lucide-react';
+import PasswordInput from '../components/PasswordInput';
 import { useAuth } from '../context/AuthContext';
 
 export default function SuperadminDashboard() {
@@ -664,13 +665,12 @@ export default function SuperadminDashboard() {
               {/* Temporary Password */}
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-slate-500 uppercase tracking-wider block">Password Temporanea</label>
-                <input
-                  type="password"
-                  required
-                  placeholder="Minimo 6 caratteri"
+                <PasswordInput
+                  className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-gymPrimary focus:ring-1 focus:ring-gymPrimary"
+                  placeholder="Es: temp1234"
                   value={newGymData.password}
                   onChange={(e) => setNewGymData(prev => ({ ...prev, password: e.target.value }))}
-                  className="w-full bg-white text-slate-800 border border-slate-300 rounded-xl px-4 py-2.5 text-sm placeholder-slate-400 focus:outline-none focus:border-gymPrimary focus:ring-1 focus:ring-gymPrimary transition-colors"
+                  required
                 />
               </div>
 
