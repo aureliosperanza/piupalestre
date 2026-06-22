@@ -496,7 +496,8 @@ export default function SuperadminDashboard() {
                     {/* Nome & Data iscrizione */}
                     <td className="px-6 py-4">
                       <div className="font-semibold text-sm text-slate-850">{gym.name}</div>
-                      <div className="text-[10px] text-slate-400 mt-0.5">
+                      <div className="text-xs font-mono text-slate-500 mt-0.5">/{gym.slug}</div>
+                      <div className="text-[10px] text-slate-400 mt-1">
                         Registrata il: {new Date(gym.created_at).toLocaleDateString('it-IT')}
                       </div>
                     </td>

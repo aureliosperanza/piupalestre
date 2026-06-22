@@ -69,7 +69,7 @@ exports.getGyms = async (req, res) => {
   try {
     // Select all columns from gyms, count of clients, left join on gym_id
     const gyms = await db('gyms')
-      .select('gyms.id', 'gyms.name', 'gyms.email', 'gyms.status', 'gyms.is_admin', 'gyms.created_at')
+      .select('gyms.id', 'gyms.name', 'gyms.slug', 'gyms.email', 'gyms.status', 'gyms.is_admin', 'gyms.created_at')
       .count('clients.id as client_count')
       .leftJoin('clients', 'gyms.id', 'clients.gym_id')
       .groupBy('gyms.id')
