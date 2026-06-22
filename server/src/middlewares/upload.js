@@ -1,22 +1,7 @@
 const multer = require('multer');
 const path = require('path');
-const fs = require('fs');
 
-// Ensure the uploads directory exists
-const uploadDir = path.join(__dirname, '..', '..', 'uploads');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, uploadDir),
-  filename: (req, file, cb) => {
-    // Unique, collision-safe filename while preserving the original extension
-    const ext = path.extname(file.originalname);
-    const unique = `cert-${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
-    cb(null, unique);
-  }
-});
+const storage = multer.memoryStorage();
 
 // Accept only PDF and any image format, max 5 MB
 const fileFilter = (req, file, cb) => {

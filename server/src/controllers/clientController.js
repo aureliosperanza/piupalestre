@@ -1,6 +1,12 @@
 const db = require('../config/db');
 const path = require('path');
 const fs = require('fs');
+const { createClient } = require('@supabase/supabase-js');
+
+const supabase = createClient(
+  process.env.SUPABASE_URL || 'https://placeholder.supabase.co',
+  process.env.SUPABASE_KEY || 'placeholder_key'
+);
 
 // Returns true if the given date is strictly in the past (before today)
 const isExpired = (dateInput) => {
@@ -182,12 +188,31 @@ exports.createClient = async (req, res) => {
     });
 
     if (req.file) {
-      await db('medical_certificates').insert({
-        client_id: id,
-        gym_id: req.gym,
-        file_path: '/uploads/' + req.file.filename,
-        status: 'approved'
-      });
+      const ext = req.file.originalname.split('.').pop();
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      const filename = `cert-${id}-${uniqueSuffix}.${ext}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('certificates')
+        .upload(filename, req.file.buffer, {
+          contentType: req.file.mimetype,
+          upsert: false
+        });
+
+      if (!uploadError) {
+        const { data: publicUrlData } = supabase.storage
+          .from('certificates')
+          .getPublicUrl(filename);
+        
+        await db('medical_certificates').insert({
+          client_id: id,
+          gym_id: req.gym,
+          file_path: publicUrlData.publicUrl,
+          status: 'approved'
+        });
+      } else {
+        console.error('Supabase upload error:', uploadError);
+      }
     }
 
     const newClient = await db('clients').where({ id, gym_id: req.gym }).first();
@@ -239,12 +264,31 @@ exports.updateClient = async (req, res) => {
 
     // If a new certificate was uploaded, store it in medical_certificates
     if (req.file) {
-      await db('medical_certificates').insert({
-        client_id: id,
-        gym_id: req.gym,
-        file_path: '/uploads/' + req.file.filename,
-        status: 'approved'
-      });
+      const ext = req.file.originalname.split('.').pop();
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      const filename = `cert-${id}-${uniqueSuffix}.${ext}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('certificates')
+        .upload(filename, req.file.buffer, {
+          contentType: req.file.mimetype,
+          upsert: false
+        });
+
+      if (!uploadError) {
+        const { data: publicUrlData } = supabase.storage
+          .from('certificates')
+          .getPublicUrl(filename);
+
+        await db('medical_certificates').insert({
+          client_id: id,
+          gym_id: req.gym,
+          file_path: publicUrlData.publicUrl,
+          status: 'approved'
+        });
+      } else {
+        console.error('Supabase upload error:', uploadError);
+      }
     } else if (req.body.remove_certificate === 'true') {
       // User explicitly removed the existing certificate
       await db('medical_certificates')
@@ -284,7 +328,11 @@ exports.deleteClient = async (req, res) => {
     // Best-effort cleanup of the associated certificate file
     const certs = await db('medical_certificates').where({ client_id: id });
     for (const cert of certs) {
-      if (cert.file_path) {
+      if (cert.file_path && cert.file_path.includes('supabase.co')) {
+        const urlParts = cert.file_path.split('/');
+        const filename = urlParts[urlParts.length - 1];
+        await supabase.storage.from('certificates').remove([filename]);
+      } else if (cert.file_path && cert.file_path.startsWith('/uploads/')) {
         const filename = cert.file_path.split('/').pop();
         const filePath = path.join(__dirname, '..', '..', 'uploads', filename);
         fs.unlink(filePath, () => {});
