@@ -54,8 +54,8 @@ exports.requestOtp = async (req, res) => {
     }
 
     const response = { message: 'Se l\'email è valida, riceverai un codice di verifica.' };
-    // In sviluppo (senza SMTP) restituiamo il codice per poter testare il flusso
-    if (!delivered && process.env.NODE_ENV !== 'production') {
+    // Se l'email non è stata inviata (es. SMTP non configurato), restituiamo il codice per poter testare il flusso
+    if (!delivered) {
       response.devCode = code;
     }
     res.json(response);
