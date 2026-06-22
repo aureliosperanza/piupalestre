@@ -112,6 +112,7 @@ export default function SuperadminDashboard() {
       title: nextStatus === 'suspended' ? 'Sospendi Palestra' : 'Riattiva Palestra',
       message: `Sei sicuro di voler ${actionWord} l'accesso per questa palestra?`,
       confirmText: nextStatus === 'suspended' ? 'Sospendi' : 'Riattiva',
+      cancelText: 'Annulla',
       variant: nextStatus === 'suspended' ? 'danger' : 'primary',
       onConfirm: async () => {
         try {
@@ -145,6 +146,7 @@ export default function SuperadminDashboard() {
       title: 'Accedi come Palestra',
       message: `Vuoi accedere come amministratore della palestra "${gym.name}"? Verrai reindirizzato al suo pannello di controllo.`,
       confirmText: 'Entra',
+      cancelText: 'Annulla',
       variant: 'primary',
       onConfirm: async () => {
         try {
