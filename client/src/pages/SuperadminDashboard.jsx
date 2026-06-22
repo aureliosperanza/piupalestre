@@ -37,6 +37,17 @@ export default function SuperadminDashboard() {
   });
   const [modalLoading, setModalLoading] = useState(false);
 
+  // Custom Confirm Modal Controls
+  const [confirmModal, setConfirmModal] = useState({
+    isOpen: false,
+    title: '',
+    message: '',
+    confirmText: 'Conferma',
+    cancelText: 'Annulla',
+    onConfirm: null,
+    variant: 'danger' // 'danger' | 'primary'
+  });
+
   // Fetch all administrative data
   const fetchData = async () => {
     setLoading(true);
@@ -96,46 +107,62 @@ export default function SuperadminDashboard() {
     const nextStatus = currentStatus === 'active' ? 'suspended' : 'active';
     const actionWord = nextStatus === 'suspended' ? 'sospendere' : 'riattivare';
     
-    if (!window.confirm(`Sei sicuro di voler ${actionWord} l'accesso per questa palestra?`)) {
-      return;
-    }
+    setConfirmModal({
+      isOpen: true,
+      title: nextStatus === 'suspended' ? 'Sospendi Palestra' : 'Riattiva Palestra',
+      message: `Sei sicuro di voler ${actionWord} l'accesso per questa palestra?`,
+      confirmText: nextStatus === 'suspended' ? 'Sospendi' : 'Riattiva',
+      variant: nextStatus === 'suspended' ? 'danger' : 'primary',
+      onConfirm: async () => {
+        try {
+          const res = await fetch(`/api/admin/gyms/${gymId}/status`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ status: nextStatus })
+          });
 
-    try {
-      const res = await fetch(`/api/admin/gyms/${gymId}/status`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ status: nextStatus })
-      });
+          if (!res.ok) {
+            const errData = await res.json();
+            throw new Error(errData.error || 'Impossibile cambiare lo stato della palestra');
+          }
 
-      if (!res.ok) {
-        const errData = await res.json();
-        throw new Error(errData.error || 'Impossibile cambiare lo stato della palestra');
+          // Refresh list
+          fetchData();
+        } catch (err) {
+          alert(err.message);
+        } finally {
+          setConfirmModal({ ...confirmModal, isOpen: false });
+        }
       }
-
-      // Refresh list
-      fetchData();
-    } catch (err) {
-      alert(err.message);
-    }
+    });
   };
 
   const handleImpersonate = async (gym) => {
-    if (!window.confirm(`Vuoi accedere come amministratore della palestra "${gym.name}"?`)) return;
-    try {
-      const res = await fetch(`/api/admin/impersonate/${gym.id}`, { method: 'POST' });
-      if (!res.ok) {
-        const errData = await res.json();
-        throw new Error(errData.error || 'Impossibile impersonificare la palestra');
+    setConfirmModal({
+      isOpen: true,
+      title: 'Accedi come Palestra',
+      message: `Vuoi accedere come amministratore della palestra "${gym.name}"? Verrai reindirizzato al suo pannello di controllo.`,
+      confirmText: 'Entra',
+      variant: 'primary',
+      onConfirm: async () => {
+        try {
+          const res = await fetch(`/api/admin/impersonate/${gym.id}`, { method: 'POST' });
+          if (!res.ok) {
+            const errData = await res.json();
+            throw new Error(errData.error || 'Impossibile impersonificare la palestra');
+          }
+          const data = await res.json();
+          impersonate(data.token, data.gym);
+          // Redirect to the gym's dashboard
+          window.location.href = `/${gym.slug}/admin`;
+        } catch (err) {
+          alert(err.message);
+          setConfirmModal({ ...confirmModal, isOpen: false });
+        }
       }
-      const data = await res.json();
-      impersonate(data.token, data.gym);
-      // Redirect to the gym's dashboard
-      window.location.href = `/${gym.slug}/admin`;
-    } catch (err) {
-      alert(err.message);
-    }
+    });
   };
 
   // Handle Gym Creation Form Submission
@@ -665,6 +692,41 @@ export default function SuperadminDashboard() {
               </div>
 
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: CUSTOM CONFIRM */}
+      {confirmModal.isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/55 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-gymCard border border-slate-200 rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl relative animate-in zoom-in-95 duration-200">
+            <div className="p-6">
+              <h3 className="font-extrabold text-lg text-slate-800 mb-2">{confirmModal.title}</h3>
+              <p className="text-sm text-slate-600 leading-relaxed mb-6">
+                {confirmModal.message}
+              </p>
+              
+              <div className="flex gap-3 justify-end mt-4">
+                <button
+                  type="button"
+                  onClick={() => setConfirmModal({ ...confirmModal, isOpen: false })}
+                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold text-sm transition-colors"
+                >
+                  {confirmModal.cancelText}
+                </button>
+                <button
+                  type="button"
+                  onClick={confirmModal.onConfirm}
+                  className={`px-4 py-2 text-white rounded-xl font-bold text-sm transition-all shadow-sm ${
+                    confirmModal.variant === 'danger'
+                      ? 'bg-rose-600 hover:bg-rose-700 shadow-rose-200'
+                      : 'bg-gymPrimary hover:bg-gymPrimaryHover shadow-gymPrimary/30'
+                  }`}
+                >
+                  {confirmModal.confirmText}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
