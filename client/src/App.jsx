@@ -12,6 +12,7 @@ import Classi from './pages/Classi';
 import Checkin from './pages/Checkin';
 import SuperadminDashboard from './pages/SuperadminDashboard';
 import Staff from './pages/Staff';
+import Guide from './pages/Guide';
 import LandingPage from './pages/LandingPage';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import CookiePolicy from './pages/CookiePolicy';
@@ -74,6 +75,7 @@ function GymRoute() {
           {activePage === 'checkin' && <Checkin />}
           {activePage === 'approvazioni' && <Approvazioni />}
           {activePage === 'staff' && <Staff />}
+          {activePage === 'guida' && <Guide />}
           {activePage === 'superadmin' && <SuperadminDashboard />}
         </div>
       </main>

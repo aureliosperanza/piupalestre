@@ -1,5 +1,5 @@
 import React from 'react';
-import { LayoutDashboard, Users, CreditCard, CalendarDays, Ticket, LogOut, CheckSquare, ShieldCheck, Tag } from 'lucide-react';
+import { LayoutDashboard, Users, CreditCard, CalendarDays, Ticket, LogOut, CheckSquare, ShieldCheck, Tag, BookOpen } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import logo from '../assets/logo.png';
 
@@ -68,6 +68,12 @@ export default function Sidebar({ activePage, setActivePage }) {
         { id: 'vendite', label: 'Contabilità e Vendite', icon: CreditCard },
         { id: 'listino', label: 'Listino Piani', icon: Tag },
         { id: 'staff', label: 'Gestione Team', icon: Users }
+      ]
+    });
+    menuGroups.push({
+      label: 'Supporto',
+      items: [
+        { id: 'guida', label: 'Guida & Assistenza', icon: BookOpen }
       ]
     });
   }
