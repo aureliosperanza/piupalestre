@@ -40,7 +40,7 @@ export default function Guide() {
       details: 'Ogni volta che vendi un abbonamento, registri un pagamento o assegni un piano a un cliente, viene generata una transazione. In questa sezione puoi monitorare tutti gli incassi, filtrare per periodo e avere un quadro chiaro delle performance economiche del tuo centro fitness.'
     },
     {
-      title: 'Listino Piani',
+      title: 'Abbonamenti',
       icon: Tag,
       description: 'Creazione e gestione degli abbonamenti.',
       details: 'Prima di poter assegnare un abbonamento a un cliente, devi crearlo qui. Puoi creare Piani di diverso tipo (es. Mensile, Trimestrale, Annuale, o Pacchetti ad Ingressi). Per ogni piano dovrai impostare il nome, il prezzo, la durata in mesi (o numero di ingressi) e una descrizione. Questi piani verranno mostrati sia in reception che nell\'app dei clienti se abiliti l\'acquisto online.'

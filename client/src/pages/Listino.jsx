@@ -104,7 +104,7 @@ export default function Listino() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-800 font-sans">Listino Abbonamenti</h1>
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-800 font-sans">Abbonamenti</h1>
           <p className="text-slate-500 mt-1 font-medium">Configura i piani della tua palestra, modificali e crea promozioni.</p>
         </div>
         <button

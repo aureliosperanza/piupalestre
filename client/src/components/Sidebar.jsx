@@ -66,7 +66,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen }
       label: 'Amministrazione',
       items: [
         { id: 'vendite', label: 'Contabilità e Vendite', icon: CreditCard },
-        { id: 'listino', label: 'Listino Piani', icon: Tag },
+        { id: 'listino', label: 'Abbonamenti', icon: Tag },
         { id: 'staff', label: 'Gestione Team', icon: Users }
       ]
     });
